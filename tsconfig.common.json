@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "esnext",
+    ],
+    "outDir": "./dist",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "node_modules",
+    "coverage",
+    "dist",
+    "debug",
+  ],
+}
