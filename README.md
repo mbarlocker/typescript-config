@@ -4,8 +4,7 @@
 [![NPM version](http://img.shields.io/npm/v/@mbarlocker/typescript-config.svg)](https://www.npmjs.com/package/@mbarlocker/typescript-config)
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/mbarlocker/typescript-config/main/LICENSE)
 
-Type-safe configuration.
-Simplified date parsing and formatting from strings. This project wraps the `parse` and `format` functions of [date-fns](https://github.com/date-fns/date-fns).
+A configuration utility that can load and reload values from remote sources.
 
 ## Installation
 
@@ -13,56 +12,118 @@ Simplified date parsing and formatting from strings. This project wraps the `par
 yarn add @mbarlocker/typescript-config
 ```
 
-## Current State
+## Features
 
-This project has never been tested or ran. It was abandoned after some rethinking was done. It probably works in the current state, but I didn't actually get to any working examples to share.
+The entire purpose for this project is to get simple, promise-based, pre-cached configuration capable of loading from
+remote data stores like files, ec2 instance metadata, AWS secrets manager, and AWS Parameter Store.
 
-I used [HOCON Parser](https://github.com/josephtzeng/hocon-parser) instead.
+* Object like configuration
+* Branch for environments, roles, etc
+* Promise-based with local caching
+* Reload individual or all values
+* Remote data stores
+* Custom data stores
 
-Features include:
+Things that it doesn't do:
 
-* type safety for config values
-* reloadability. not so valuable for constant values, very valuable for retrieved files, urls, and cloud parameters
-* environment branching
-* transforms
+* Local override files (although you can accomplish this by using file:// or similar)
 
-## TODO
-
-* NPM publishing
-* Test cases
-* Documentation & examples
-
-## Design
+## Usage
 
 The API was designed for a config file that looks like this:
 
 ```typescript
 import { Config } from '@mbarlocker/typescript-config'
-import { ConstantSource } from '@mbarlocker/typescript-config'
-import { EnvironmentBranch } from '@mbarlocker/typescript-config'
 
-export const config = new Config()
-
-export default {
+export const config = new Config({
 	db: {
-		hostname: new EnvironmentBranch({
-			dev: new ConstantSource('localhost'),
-			prod: new ConstantSource('1.1.1.1'),
-		}),
-		user: new EnvironmentBranch({
-			default: 'myuser',
-		}),
-		password: new EnvironmentBranch({
-			dev: new ConstantSource('dev'),
-			prod: new HttpSource('https://secrets.and.other.stuff.com/mysecret.txt'),
-		}),
-		...
+		hostname: {
+			$env_production: '1.1.1.1',
+			$env_development: 'localhost',
+		},
+		user: 'myuser',
+		password: {
+			$env_production: 'file:///secrets/db.password',
+			$default: 'dev',
+		},
+		port: {
+			$default: 3306,
+		},
 	},
 	...
-}
+})
+
+config.branch('env', 'development' /* would likely use process.env.NODE_ENV or similar */)
+await config.load()
+
+const hostname = config.value('db.hostname').string() // localhost
+const user = config.value('db.user').string() // myuser
+const password = config.value('db.password').string() // dev
+const port = config.value('db.port').int() // 3306
 ```
 
+It also works with promises and reloading
+```typescript
+export const config = new Config({ ...fromAbove })
+
+config.branch('env', 'production')
+// waiting isn't necessary if you're using promises
+// await config.load() 
+
+const password = (await config.promise('db.password')).string() // whatever the contents of /secrets/db.password are, as text
+```
+
+## Supported Loaders
+
+Built in loaders support the following schemas.
+
+| Schema | Description | Example |
+| :----- | :---------- | :------ |
+| `file://` | Read the contents of a file on the local filesystem with the utf-8 encoding | `file:///a/b/c` will read `/a/b/c` |
+| `bfile://` | Read the contents of a file on the local filesystem as a buffer | `bfile:///a/b/c` will read `/a/b/c` as a buffer |
+| `http://` | Make an HTTP GET request to the specified location and return the body as a string using utf-8 encoding | `http://www.google.com/` will return Google's homepage as a string |
+| `https://` | Same as `http://` but for HTTPS | `https://www.google.com/` will return Google's homepage as a string |
+| `bhttp://` | Same as `http://` but return a Buffer | `bhttp://www.google.com/` will return Google's homepage as a Buffer |
+| `bhttps://` | Same as `https://` but return a Buffer | `bhttps://www.google.com/` will return Google's homepage as a Buffer |
+
+Custom loaders can be registered with the Config *prior to the .load() call*.
+
+```typescript
+import { Loader } from '@mbarlocker/typescript-config'
+import { Config } from '@mbarlocker/typescript-config'
+
+const config = new Config({
+	host: {
+		ipv4: {
+			$ENV_local: '127.0.0.1',
+			$default: 'ec2://latest/meta-data/public-ipv4',
+		},
+	},
+})
+
+config.branch('ENV', process.env.NODE_ENV)
+config.registerLoader('ec2://', (data) => fetch(`http://169.254.169.254/${data.url}`))
+await config.load()
+
+config.value('host.ipv4') // returns either 127.0.0.1 or the response from the EC2 metadata server
+```
+
+## Reloading
+
+It's easy to set up configuration reloading. Just remember that you'll need to `await` the response if
+you want to verify that all of them have been loaded. Entries that fail to refresh will continue to be
+cached.
+
+```typescript
+await config.refresh()
+```
+
+While the values are being refreshed, the old cached values will continue to be served. If you'd like to make sure
+that the new values are being used, get the `.promise('path.to.my.value')` version. That will always return the newest
+value, even if that value hasn't been finished or will end with an error.
+
 ## License
+
 Copyright © 2023-present Matthew Barlocker.
 
 @mbarlocker/typescript-config is licensed under the MIT License. See [LICENSE](LICENSE) for the full license text.

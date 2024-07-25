@@ -3,7 +3,7 @@
   "type": "commonjs",
   "version": "0.0.0",
   "author": "Matthew Barlocker",
-  "description": "",
+  "description": "Remote, reloadable, typesafe configuration for node apps.",
   "license": "MIT",
   "packageManager": "yarn@4.3.1",
   "homepage": "https://github.com/mbarlocker/typescript-config",
@@ -40,20 +40,23 @@
     "lint:fix": "eslint . --fix",
     "test": "env TZ=UTC vitest src --coverage --run"
   },
-  "dependencies": {
-    "lodash": "^4.17.21"
-  },
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.7",
-    "@types/lodash": "^4.17.7",
-    "@types/node": "^20.14.11",
-    "ts-essentials": "^10.0.1",
-    "tslib": "^2.6.3",
-    "typescript": "^5.5.3"
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/coverage-v8": "^1.2.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "dependencies": {
+    "@types/node": "^20.14.12",
+    "tslib": "^2.6.3"
   },
   "keywords": [
     "config",
-    "reload",
+    "configuration",
+    "reloadable",
     "typescript"
   ]
 }
