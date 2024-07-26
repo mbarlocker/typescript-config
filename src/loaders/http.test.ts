@@ -1,4 +1,4 @@
-import * as HttpLoader from './http'
+import * as HttpLoader from './http.js'
 import { assert, describe, expect, it } from 'vitest'
 
 describe('http loader', () => {

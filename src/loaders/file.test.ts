@@ -1,5 +1,5 @@
-import * as FileLoader from './file'
-import fs from 'fs'
+import * as FileLoader from './file.js'
+import fs from 'node:fs'
 import { assert, describe, expect, it } from 'vitest'
 
 describe('file loader', () => {

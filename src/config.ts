@@ -1,12 +1,12 @@
-import type { Definition } from './types'
-import type { Loader } from './types'
-import type { Logger } from './types'
-import type { Value } from './types'
-import { load as FileLoader } from './loaders/file'
-import { load as HttpLoader } from './loaders/http'
-import { loadBuffer as FileBufferLoader } from './loaders/file'
-import { loadBuffer as HttpBufferLoader } from './loaders/http'
-import { Wrapper } from './wrapper'
+import type { Definition } from './types.js'
+import type { Loader } from './types.js'
+import type { Logger } from './types.js'
+import type { Value } from './types.js'
+import { load as FileLoader } from './loaders/file.js'
+import { load as HttpLoader } from './loaders/http.js'
+import { loadBuffer as FileBufferLoader } from './loaders/file.js'
+import { loadBuffer as HttpBufferLoader } from './loaders/http.js'
+import { Wrapper } from './wrapper.js'
 
 interface ResolvedItem {
 	path: string

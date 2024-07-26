@@ -1,4 +1,4 @@
-import { Wrapper } from './wrapper'
+import { Wrapper } from './wrapper.js'
 import { assert, describe, expect, it } from 'vitest'
 
 describe('wrapper', () => {

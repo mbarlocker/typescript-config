@@ -1,12 +1,12 @@
-export * as Loaders from './loaders/index'
-export { Config } from './config'
-export { Definition } from './types'
-export { Loader } from './types'
-export { LoaderArgs } from './types'
-export { Logger } from './types'
-export { Value } from './types'
-export { Wrapper } from './wrapper'
+export * as Loaders from './loaders/index.js'
+export { Config } from './config.js'
+export { Definition } from './types.js'
+export { Loader } from './types.js'
+export { LoaderArgs } from './types.js'
+export { Logger } from './types.js'
+export { Value } from './types.js'
+export { Wrapper } from './wrapper.js'
 
-import { Config as Default } from './config'
+import { Config as Default } from './config.js'
 
 export default Default

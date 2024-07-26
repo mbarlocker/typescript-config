@@ -1,5 +1,5 @@
-import Config from './index'
-import fs from 'fs'
+import Config from './index.js'
+import fs from 'node:fs'
 import { assert, describe, expect, it } from 'vitest'
 
 describe('module index', () => {

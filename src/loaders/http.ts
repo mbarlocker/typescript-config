@@ -1,6 +1,6 @@
-import http from 'http'
-import https from 'https'
-import type { Loader } from '../types'
+import http from 'node:http'
+import https from 'node:https'
+import type { Loader } from '../types.js'
 
 export const load: Loader<string> = (data) => {
 	return loadBuffer(data).then(x => x.toString('utf-8'))

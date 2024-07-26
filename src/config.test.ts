@@ -1,6 +1,6 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import { assert, describe, expect, it } from 'vitest'
-import { Config } from './config'
+import { Config } from './config.js'
 
 describe('config', () => {
 	it('loads simple config', async () => {

@@ -1,4 +1,4 @@
-import type { Value } from './types'
+import type { Value } from './types.js'
 
 export class Wrapper {
 	constructor(readonly path: string, readonly value: Value | undefined) {
