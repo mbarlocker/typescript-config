@@ -1,7 +1,7 @@
 {
   "name": "@mbarlocker/typescript-config",
   "type": "commonjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Matthew Barlocker",
   "description": "Remote, reloadable, typesafe configuration for node apps.",
   "license": "MIT",
@@ -35,7 +35,7 @@
     "clean": "rm -rf dist coverage",
     "compile": "yarn compile:cjs && yarn compile:esm",
     "compile:cjs": "tsc -p tsconfig.cjs.json",
-    "compile:esm": "tsc -p tsconfig.esm.json",
+    "compile:esm": "tsc -p tsconfig.esm.json && ( echo '{\"type\": \"module\"}' > dist/esm/package.json )",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "env TZ=UTC vitest src --coverage --run"
