@@ -1,7 +1,7 @@
 {
   "name": "@mbarlocker/typescript-config",
   "type": "commonjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Matthew Barlocker",
   "description": "Remote, reloadable, typesafe configuration for node apps.",
   "license": "MIT",
