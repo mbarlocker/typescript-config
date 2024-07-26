@@ -32,7 +32,7 @@
   },
   "scripts": {
     "build": "yarn compile",
-    "clean": "rm -rf dist node_modules coverage",
+    "clean": "rm -rf dist coverage",
     "compile": "yarn compile:cjs && yarn compile:esm",
     "compile:cjs": "tsc -p tsconfig.cjs.json",
     "compile:esm": "tsc -p tsconfig.esm.json",
