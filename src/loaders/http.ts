@@ -26,7 +26,7 @@ export const loadBuffer: Loader<Buffer> = (data) => {
 							return
 					}
 
-					let chunks: Buffer[] = []
+					const chunks: Buffer[] = []
 
 					response.on('data', (chunk) => {
 							chunks.push(Buffer.from(chunk, 'binary'))

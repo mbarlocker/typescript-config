@@ -103,7 +103,7 @@ export class Config {
 						)
 
 					const branchValue = this._branches[branchKey]
-					const childKey = `\$${branchKey}_${branchValue}`
+					const childKey = `$${branchKey}_${branchValue}`
 
 					if (childKey in definition) {
 						this._logger?.debug(`Branching into ${childKey} at ${paths.join('.')}`)
@@ -143,7 +143,7 @@ export class Config {
 					}
 
 					const url = uri.substring(schema.length)
-					const fn = this._loaders[schema]!
+					const fn = this._loaders[schema]
 
 					return {
 						loader: {
@@ -155,7 +155,7 @@ export class Config {
 					}
 				})()
 
-				this._logger?.info(`Found config ${path} ${loader.loader?.schema ? `with loader [${definition}]` : ''}`)
+				this._logger?.info(`Found config ${path} ${loader.loader?.schema ? `with loader [${Buffer.isBuffer(definition) ? '(buffer)' : definition}]` : ''}`)
 
 				const item: ResolvedItem = {
 					path,
