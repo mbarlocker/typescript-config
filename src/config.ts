@@ -230,23 +230,18 @@ export class Config {
 		return this.allPromises()
 	}
 
-	public value(path: string): Wrapper | undefined {
+	public value(path: string): Wrapper {
 		this.requireLoaded(true)
 
 		const item = this.requireItem(path)
-
-		if (item.value === undefined) {
-			return undefined
-		}
-
 		return new Wrapper(item.path, item.value)
 	}
 
 	public valueSafe(path: string): Wrapper {
 		this.requireLoaded(true)
 
-		const item = this.requireItem(path)
-		return new Wrapper(item.path, item.value)
+		const item = this._resolved.get(path)
+		return new Wrapper(path, item?.value)
 	}
 
 	public promise(path: string): Promise<Wrapper> {
