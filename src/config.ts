@@ -24,6 +24,8 @@ interface ResolvedItem {
 }
 
 const defaultKey = '$default'
+const branchKeyRegex = /^\$(.*)_.*$/
+const remoteValueRegex = /^\$\{((.*?:\/\/)(.*))\}$/
 
 export class Config {
 	private _loaders: Record<string, Loader> = {}
@@ -73,8 +75,6 @@ export class Config {
 
 	public load(): Promise<void> {
 		this.requireLoaded(false)
-
-		const branchKeyRegex = /^\$(.*)_.*$/
 
 		const findItems = (definition: Definition, paths: string[]) => {
 			if (typeof definition === 'object' && !Buffer.isBuffer(definition)) {
@@ -131,19 +131,19 @@ export class Config {
 						return {}
 					}
 
-					if (!/^\w+:\/\/.*/.test(definition)) {
+					const results = definition.match(remoteValueRegex)
+					if (results === null) {
 						return {}
 					}
 
-					const uri = definition
-					const schema = Object.keys(this._loaders).find(x => definition.startsWith(x))
-					if (schema === undefined) {
-						this._logger?.warn(`Unknown loader schema ${definition}. Use config.registerLoader() to add custom loaders`)
-						return {}
-					}
+					const uri = results[1]
+					const schema = results[2]
+					const url = results[3]
 
-					const url = uri.substring(schema.length)
 					const fn = this._loaders[schema]
+					if (fn === undefined) {
+						throw new Error(`Undefined loader for schema [${schema}]. Use config.registerLoader() to add custom loaders`)
+					}
 
 					return {
 						loader: {

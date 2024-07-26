@@ -20,7 +20,7 @@ describe('config', () => {
 
 	it('loads remote config and converts to string', async () => {
 		const config = new Config({
-			file: `bfile://${__filename}`,
+			file: `\${bfile://${__filename}}`,
 		})
 
 		await config.load()
@@ -32,7 +32,7 @@ describe('config', () => {
 		const config = new Config({
 			a: {
 				b: {
-					c: 'random://anything',
+					c: '${random://anything}',
 				},
 			},
 		})
@@ -104,7 +104,7 @@ describe('config', () => {
 
 	it('refreshes', async () => {
 		const config = new Config({
-			value: 'fresh://ignore',
+			value: '${fresh://ignore}',
 		})
 
 		let value = 0
@@ -125,7 +125,7 @@ describe('config', () => {
 
 	it('serves stale during refresh', async () => {
 		const config = new Config({
-			value: 'fresh://ignore',
+			value: '${fresh://ignore}',
 		})
 
 		let value = 0
@@ -167,5 +167,16 @@ describe('config', () => {
 		await config.load()
 
 		assert.isTrue(messages > 0)
+	})
+
+	it('does not load a remote value without brackets', async () => {
+		const url = 'mysql://user:pass@host:port/db'
+		const config = new Config({
+			db: url,
+		})
+
+		await config.load()
+
+		assert.equal(config.value('db').string(), url)
 	})
 })

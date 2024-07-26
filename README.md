@@ -26,7 +26,7 @@ remote data stores like files, ec2 instance metadata, AWS secrets manager, and A
 
 Things that it doesn't do:
 
-* Local override files (although you can accomplish this by using file:// or similar)
+* Local override files (although you can accomplish this by using any of the remote loaders to store a local file)
 
 ## Usage
 
@@ -43,7 +43,7 @@ export const config = new Config({
 		},
 		user: 'myuser',
 		password: {
-			$env_production: 'file:///secrets/db.password',
+			$env_production: '${file:///secrets/db.password}',
 			$default: 'dev',
 		},
 		port: {
@@ -96,7 +96,7 @@ const config = new Config({
 	host: {
 		ipv4: {
 			$ENV_local: '127.0.0.1',
-			$default: 'ec2://latest/meta-data/public-ipv4',
+			$default: '${ec2://latest/meta-data/public-ipv4}',
 		},
 	},
 })
@@ -106,6 +106,31 @@ config.registerLoader('ec2://', (data) => fetch(`http://169.254.169.254/${data.u
 await config.load()
 
 config.value('host.ipv4') // returns either 127.0.0.1 or the response from the EC2 metadata server
+```
+
+## Remote Values
+
+All values that are to be loaded by the registered loaders have to be designated. The way to
+do this is to use `${url}`. This has the potential to conflict and cause errors if you surround them
+with backticks, but is meant to indicate to your brain that these are variables. Just be careful when
+using quotes and backticks and you shouldn't have an issue.
+
+```typescript
+// GOOD values - notice the single quotes
+const config = new Config({
+	db: {
+		url: 'mysql://user:pass@host:port/db',
+		key: '${http://secrets.host.com/db/key.txt}',
+	},
+})
+
+// BAD values - notice the backticks
+const config = new Config({
+	db: {
+		url: 'mysql://user:pass@host:port/db',
+		key: `${http://secrets.host.com/db/key.txt}`,
+	},
+})
 ```
 
 ## Reloading
