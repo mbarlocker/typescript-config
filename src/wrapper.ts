@@ -1,7 +1,7 @@
 import type { Value } from './types.js'
 
 export class Wrapper {
-	constructor(readonly path: string, readonly value: Value | undefined) {
+	constructor(readonly path: string, readonly value: Value) {
 	}
 
 	private require<T>(value: T | undefined): T {

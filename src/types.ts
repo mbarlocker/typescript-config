@@ -1,5 +1,5 @@
 
-export type Value = string | number | boolean | Buffer
+export type Value = string | number | boolean | Buffer | undefined
 
 export type Definition = { [key: string]: Definition } | Value
 
