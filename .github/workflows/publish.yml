@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,5 +31,3 @@ jobs:
           yarn clean
           yarn build
       - run: npm publish --access public .
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
